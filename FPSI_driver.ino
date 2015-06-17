@@ -4,22 +4,6 @@
     This sketch uses the following associated
     pins in conjunction with the ,
     for the use of a sawtooth signal generator.
-    
-    Pin Name      Pin Location
-    ---------    --------------
-      DB0              1
-      DB1              2
-      DB2              3
-      DB3              4
-      DB4              5
-      DB5              6
-      DB6              7
-      DB7              8
-      A0               9
-      A1               10
-      LDAC             11
-      WR               12         
-      CS               13
 
   April 30, 2015 by David Houston
   - Replaced digitalWrite(a,b) and pinMode(a,b) functions with
@@ -67,6 +51,12 @@
   
   Developers Note: Current Pin out is as follows
   
+   
+    Pin Name      Pin Location
+    ---------    --------------
+      SDA            A5
+      SCL            A4
+  
 */
 
 #include <Wire.h>
@@ -77,7 +67,7 @@ Adafruit_MCP4725 dac; // use layout from the Adafruit Header File
 #define bitres 1024;
 const int numbits = 1024; // Number of tunable bits at one time
 const int wave_bits = 4096; // Number of bits in the period of the signal
-int skip = 10; // Number of bits to skip each time to increase speed
+uint32_t skip = 70; // Number of bits to skip each time to increase speed
 			
 // Variables 
 
@@ -92,6 +82,7 @@ void setup()
   // Setup for Serial Communication
   // Pin Assignments
   pinMode(A0,INPUT);
+  dac.begin(0x62);
 }
 
 // Infinite Loop
@@ -105,8 +96,14 @@ void loop()
    value you are at there will 4096 different steps. If this is too dense and undisguishabled
    I will simple change the bit density.
    */
-	for (int i = 0; i < wave_bits-1; i = i + skip) {
+   digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
+	for (uint32_t i = 0; i < wave_bits-1; i = i + skip) {
 		dac.setVoltage(i,false);
+
+        
+//        delay(1000);              // wait for a second
+        digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
+//        delay(1000);              // wait for a second
   }
 }
 
